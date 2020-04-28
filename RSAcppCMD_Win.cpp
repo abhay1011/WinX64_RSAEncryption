@@ -18,21 +18,6 @@ typedef mp::number<mp::cpp_int_backend<4096, 4096, mp::signed_magnitude, mp::unc
     int rsaEncrypt();
     int rsaDecrypt();};
 //********encryption**Program****/
-void Users::genKeys(){
- int pSet[4],qSet[2];
- cout<<"Enter the first prime No. P: ";
- cin>>p;
- cout<<"Enter the second prime NO. Q:";
- cin>>q;
- n=p*q;
-// cout<<"The N is : "<<n<<endl;//n=p*q
- phiN=(p-1)*(q-1);
-// cout<<"The phi(n) is : "<<phiN<<endl;//phiN =(p-1)*(q-1)
- e=getE();
- //cout<<"The e is : "<<e<<endl;
- d=getD(phiN,e);
-// cout<<"The d is : "<<d<<endl;
-}
 int64_t Users::gcd(int64_t a,int64_t b){
     int64_t temp;
     while(1){
@@ -68,6 +53,7 @@ int64_t Users::getD(double phiN,double e){
 return d;
 }
 int4096_t Users::power(int4096_t x,int4096_t y){
+
     int i;
     int4096_t res=1;
     for(i=0;i<y;i++){
@@ -75,14 +61,31 @@ int4096_t Users::power(int4096_t x,int4096_t y){
     }
     return res;
 }
+void Users::genKeys(){
+ int pSet[4],qSet[2];
+ cout<<"Enter the first prime No. P: ";
+ cin>>p;
+ cout<<"Enter the second prime NO. Q:";
+ cin>>q;
+ n=p*q;
+// cout<<"The N is : "<<n<<endl;//n=p*q
+ phiN=(p-1)*(q-1);
+// cout<<"The phi(n) is : "<<phiN<<endl;//phiN =(p-1)*(q-1)
+ e=getE();
+ //cout<<"The e is : "<<e<<endl;
+ d=getD(phiN,e);
+// cout<<"The d is : "<<d<<endl;
+}
 int Users::rsaEncrypt(){
  genKeys();
+ system("cls");
+ string str;
  cout<<"Now enter the message :";
- cin>>msg;
- temp=power(msg,e);
+ getline(cin,str);
+ int m=123;
+ temp=power(m,e);
 // cout<<"power msg^e : "<<temp<<endl;
  ct=temp%n;
- system("cls");
  cout<<"Encrypted(msg^e)%n : "<<ct<<endl;
 }
 int Users::rsaDecrypt(){
@@ -129,7 +132,7 @@ return 1;
  cout<<"Login failed!"<<endl<<"Try Again"<<endl;
  Sleep(1500); return 0;}//***********credentialInput**********************void Users::credential(){system("cls"); cout<<"Enter Your Details..."<<endl; cout<<" Username : ";cin>>uname; cout<<" Password : ";cin>>pwd;}//**********user login****************************void Users::login(){ int choice,flag=0; credential(); cout<<" Private Key : ";cin>>pvtkey;
  cin.clear();
- cin.ignore(10,'\n'); flag=authenticate(); if(flag==1){    system("cls");    cout<<"Login Successfull!"<<endl;    Sleep(1000);    do{        cout<<" 1>List All files."<<endl;        //Always show the encypted data to console!        cout<<" 2>Encrypt Data from Keyboard."<<endl;        cout<<" 3>Encrypt Data from Files."<<endl;        //Show Data to the console and also Save to file        cout<<" 4>Decrypt Your Data."<<endl;        cout<<" 5>Go Back!"<<endl;        cout<<" 6>Exit"<<endl;        cout<<"Choice : ";cin>>choice;        switch(choice){            case 1:system("cls");                   cout<<"The under current directory!"<<endl;                   system("dir *.txt");                   cout<<endl<<"*********************"<<endl;                break;            case 2://keyEncrypt();                break;            case 3:rsaEncrypt();                break;            case 4:rsaDecrypt();//decData();                break;            case 5:                break;            case 6:exitProg();            default:system("cls");                    cout<<"Invalid Input!"<<endl;                break;    }    }while(true); } else{ cout<<"Invalid Username or Password!"; } }//**********user Sign up**************************void Users::signUp(){ system("cls"); string temp; here: credential(); cout<<" Re-enter Password : ";cin>>temp;
+ cin.ignore(10,'\n'); flag=authenticate(); if(flag==1){    system("cls");    cout<<"Login Successfull!"<<endl;    Sleep(1000);    do{        cout<<" 1>List All files."<<endl;        //Always show the encypted data to console!        cout<<" 2>Encrypt Data from Keyboard."<<endl;        cout<<" 3>Encrypt Data from Files."<<endl;        //Show Data to the console and also Save to file        cout<<" 4>Decrypt Your Data."<<endl;        cout<<" 5>Go Back!"<<endl;        cout<<" 6>Exit"<<endl;        cout<<"Choice : ";cin>>choice;        switch(choice){            case 1:system("cls");                   cout<<"The under current directory!"<<endl;                   system("dir *.txt");                   cout<<endl<<"*********************"<<endl;                break;            case 2:rsaEncrypt();//keyEncrypt();                break;            case 3:                break;            case 4:rsaDecrypt();//decData();                break;            case 5:                break;            case 6:exitProg();            default:system("cls");                    cout<<"Invalid Input!"<<endl;                break;    }    }while(true); } else{ cout<<"Invalid Username or Password!"; } }//**********user Sign up**************************void Users::signUp(){ system("cls"); string temp; here: credential(); cout<<" Re-enter Password : ";cin>>temp;
  ofstream out("credential.dat",ios::app); if(!out){    cout<<"Failed to create ofstream object!";    exit(-1);    } out<<uname<<'#'<<pwd<<'#'; if(temp!=pwd){    cout<<"Password Did not match!"<<endl;    Sleep(2000);    goto here;    } else{    cout<<"Account Successfully Created"<<endl;    cout<<"Your Private Key is :"<<endl;//Generate Private key here    cout<<"Going Back to main menu..."<<endl;    Sleep(3000);}}//******************dataEncryption****************int main(){ int choice,i=0; Users u1; do{    system("cls");
     cout<<"*************RSA encrption*************"<<endl;    cout<<"Choose any of option:"<<endl;    cout<<" 1>Login"<<endl;    cout<<" 2>SignUp"<<endl;    cout<<" 3>Exit"<<endl;    cout<<"Choice: ";    cin>>choice;
     cin.clear();//It clear cin error flag which stops further input
