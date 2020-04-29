@@ -6,7 +6,8 @@ the RSAencryption on numerical data and saving the data into a file */
 #include <boost/multiprecision/cpp_int.hpp>
 using namespace boost::multiprecision;using namespace std;
 namespace mp = boost::multiprecision;
-typedef mp::number<mp::cpp_int_backend<4096, 4096, mp::signed_magnitude, mp::unchecked, void> >  int4096_t;//***********classSection*************************class Users{private:
+typedef mp::number<mp::cpp_int_backend<4096, 4096, mp::signed_magnitude, mp::unchecked, void> >  int4096_t;//***********classSection*************************
+class Users{private:
     int64_t p,q,n,phiN,e,d;
     int4096_t temp,ct,msg;    int64_t pvtkey;    char uname[20],pwd[20];    void credential();    int authenticate();
     int64_t gcd(int64_t a,int64_t b);
@@ -17,7 +18,7 @@ typedef mp::number<mp::cpp_int_backend<4096, 4096, mp::signed_magnitude, mp::unc
     int exitProg();
     void rsaFileEncrypt();
     int rsaEncrypt();
-    int rsaDecrypt();
+    void rsaDecrypt();
     void goBack();};
 void Users::goBack(){
     char ch;
@@ -93,24 +94,40 @@ void Users::genKeys(){
  d=getD(phiN,e);
 // cout<<"The d is : "<<d<<endl;
 }
-/*void Users::rsaFileEncrypt(){
+void Users::rsaFileEncrypt(){
  genKeys();
  system("cls");
- char ch;
- ofstream out("encrypted.dat",ios::out); if(!out){    cout<<"Failed to create ofstream object!";    exit(-1);    }
+ int i;
+ char name[20],ch;
+ cout<<"Please name file to encrypt : ";
+ cin>>name;
+ ofstream out("encrypted.dat",ios::out);
+ fstream  rdChar(name,ios::in); if(!out){    cout<<"Failed to create ofstream object!";    exit(-1);    }
     cout<<"Encrypting Data!"<<endl;
- while(ch!='\0'){
+ if(!rdChar){
+    cout<<"File not Found"<<endl;
+    goBack();
+    return;
+ }
+ while(rdChar.get(ch)){
     int m=ch;
     temp=power(m,e);
     ct=temp%n;
     out<<ct<<' ';
     cout<<ct;
-    i++;
-    ch=str[i];
  }
  cout<<"\nData Encryption Complete !"<<endl;
+ rdChar.close();
+ out.close();
+  cout<<"Save This Data to File Y/N:";
+ cin>>ch;
+ if(ch=='Y'||ch=='y'){
+    cout<<"Save File as :";
+    cin>>name;
+    rename("encrypted.dat",name);
+ }
  goBack();
-}*/
+}
 int Users::rsaEncrypt(){
  genKeys();
  system("cls");
@@ -144,27 +161,60 @@ int Users::rsaEncrypt(){
  }
  goBack();
 }
-int Users::rsaDecrypt(){
+void Users::rsaDecrypt(){
     system("cls");
-    fstream myFile("encrypted.dat",ios_base::in);
-    fstream decFile("decrypted.dat",ios_base::out);
+    char name[20],ch;
     int a;
-    char ch;
-    while (myFile >> a)
+    cout<<"Name the File.extension to Decrypt"<<endl;
+    cin>>name;
+    fstream encInt(name,ios::in);
+    if(!encInt){
+        cout<<"The file You have entered not found!"<<endl;
+        goBack();
+        return;
+    }
+    genKeys();
+    //Saving the dec into decrypted.dat
+    fstream decFile("decrypted.dat",ios_base::out);
+    while (encInt >> a)
     {   ct=a;
         temp=power(ct,d);
         msg=temp%n;
         decFile<<msg<<' ';
     }
-    myFile.close();
+    encInt.close();
     decFile.close();
-    fstream msgFile("decrypted.dat",ios_base::in);
+    fstream msgFile("decrypted.dat",ios_base::in);//for Reading decInt
+    fstream txtFile("originalTxt.dat",ios_base::out);//For saving char
     cout<<"The Decrypted data"<<endl;
     while(msgFile>>a){
         cout<<(char)a;
+        txtFile<<char(a);
     }
-    cout<<endl;
-    goBack();
+    msgFile.close();
+    txtFile.close();
+    while(true){
+        cout<<"\nSave The Data? Y/N :";
+        cin>>ch;
+        if(ch=='y'||ch=='Y'){
+            cout<<"Please name the file:";
+            cin>>name;
+            if(rename("originalTxt.dat",name)==0)
+                cout<<"File Saved Successfully!"<<endl;
+            else
+                cout<<"Failed to Save the file"<<endl;
+            break;
+        }
+        else if(ch=='n'||ch=='N')
+        {   cout<<"Going back to previous menu"<<endl;
+            //delete both files decryped.dat and originalTxt.dat
+            break;
+            }
+        else
+        {   cout<<"Invalid Option! Try Again!"<<endl;
+        }
+    }
+     goBack();
 }
 //******to Close The Program**********************
 int Users::exitProg(){
@@ -204,7 +254,7 @@ return 1;
  Sleep(1500); return 0;}//***********credentialInput**********************void Users::credential(){system("cls"); cout<<"Enter Your Details..."<<endl; cout<<" Username : ";cin>>uname; cout<<" Password : ";cin>>pwd;}//**********user login****************************void Users::login(){ int choice,flag=0; credential();
  cin.clear();
  cin.ignore(10,'\n'); flag=authenticate(); if(flag==1){    system("cls");    cout<<"Login Successfull!"<<endl;    Sleep(1000);    do{
-        cout<<"Welcome "<<uname<<endl;        cout<<" 1>List All files."<<endl;        //Always show the encypted data to console!        cout<<" 2>Encrypt Data from Keyboard."<<endl;        cout<<" 3>Encrypt a Text File."<<endl;        //Show Data to the console and also Save to file        cout<<" 4>Decrypt Your Data."<<endl;        cout<<" 5>Switch"<<endl;        cout<<" 6>Exit"<<endl;        cout<<"Choice : ";cin>>choice;        switch(choice){            case 1:system("cls");                   cout<<"The under current directory!"<<endl;                   system("dir *.*");                   cout<<endl<<"*********************"<<endl;                break;            case 2:rsaEncrypt();//keyEncrypt();                break;            case 3:                break;            case 4:rsaDecrypt();//decData();                break;            case 5:                break;            case 6:exitProg();            default:system("cls");                    cout<<"Invalid Input!"<<endl;                break;    }    }while(true); } else{ cout<<"Invalid Username or Password!"; } }//**********user Sign up**************************void Users::signUp(){ system("cls"); string temp; here: credential(); cout<<" Re-enter Password : ";cin>>temp;
+        cout<<"Welcome "<<uname<<endl;        cout<<" 1>List All files."<<endl;        //Always show the encypted data to console!        cout<<" 2>Encrypt Data from Keyboard."<<endl;        cout<<" 3>Encrypt a Text File."<<endl;        //Show Data to the console and also Save to file        cout<<" 4>Decrypt Your Data."<<endl;        cout<<" 5>Switch User"<<endl;        cout<<" 6>Exit"<<endl;        cout<<"Choice : ";cin>>choice;        switch(choice){            case 1:system("cls");                   cout<<"The under current directory!"<<endl;                   system("dir *.*");                   cout<<endl<<"*********************"<<endl;                break;            case 2:rsaEncrypt();//keyEncrypt();                break;            case 3:rsaFileEncrypt();                break;            case 4:rsaDecrypt();//decData();                break;            case 5:return;                break;            case 6:exitProg();            default:system("cls");                    cout<<"Invalid Input!"<<endl;                break;    }    }while(true); } else{ cout<<"Invalid Username or Password!"; } }//**********user Sign up**************************void Users::signUp(){ system("cls"); string temp; here: credential(); cout<<" Re-enter Password : ";cin>>temp;
  ofstream out("credential.dat",ios::app); if(!out){    cout<<"Failed to create ofstream object!";    exit(-1);    } out<<uname<<'#'<<pwd<<'#'; if(temp!=pwd){    cout<<"Password Did not match!"<<endl;    Sleep(2000);    goto here;    } else{    cout<<"Account Successfully Created"<<endl;    cout<<"Your Private Key is :"<<endl;//Generate Private key here    cout<<"Going Back to main menu..."<<endl;    Sleep(3000);}}//******************dataEncryption****************int main(){ int choice,i=0; Users u1; do{    system("cls");
     cout<<"*************RSA encrption*************"<<endl;    cout<<"Choose any of option:"<<endl;    cout<<" 1>Login"<<endl;    cout<<" 2>SignUp"<<endl;    cout<<" 3>Exit"<<endl;    cout<<"Choice: ";    cin>>choice;
     cin.clear();//It clear cin error flag which stops further input
