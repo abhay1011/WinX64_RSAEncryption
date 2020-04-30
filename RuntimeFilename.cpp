@@ -1,1 +1,0 @@
-//Program for custom file name at runtime#include<iostream>#include<fstream>using namespace std;int main(){char filename[100];cout<<"Enter the filename:";cin>>filename;fstream abc(filename,ios::app);abc<<"hellow world!\n";return 0;}

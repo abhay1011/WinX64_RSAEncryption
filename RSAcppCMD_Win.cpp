@@ -11,16 +11,24 @@ namespace mp = boost::multiprecision;
 typedef mp::number<mp::cpp_int_backend<4096, 4096, mp::signed_magnitude, mp::unchecked, void> >  int4096_t;//***********classSection*************************
 class Users{private:
     int64_t p,q,n,phiN,e,d;
+    char ch,name[20];
     int4096_t temp,ct,msg;    char uname[20],pwd[20];    void credential();    int authenticate();
     int64_t gcd(int64_t a,int64_t b);
     int64_t getE();
     int64_t getD(double phiN,double e);
     int4096_t power(int4096_t x,int4096_t y);
-    void genKeys();public:    void login();    void signUp();
+    void genKeys();
+    void saveFile();public:    void login();    void signUp();
     int exitProg();
     void rsaFileEncrypt();
     int rsaEncrypt();
-    void rsaDecrypt();};
+    void rsaDecrypt();
+    void pressKey();};
+void Users::pressKey(){
+    cout<<"\n*****************************************"<<endl;
+    cout<<"Press any key to continue..."<<endl;
+    getch();
+}
 //GCD function
 int64_t Users::gcd(int64_t a,int64_t b){
     int64_t temp;
@@ -67,20 +75,42 @@ int4096_t Users::power(int4096_t x,int4096_t y){
 }
 //For generating all RSA variables
 void Users::genKeys(){
- system("cls");
- cout<<"Enter the first prime No. P: ";
- cin>>p;
- cout<<"Enter the second prime NO. Q:";
- cin>>q;
+ cout<<"Enter PRIME no. Between 10 & 30"<<endl;
+ cout<<"e.g[11,13,17,19,23,29]"<<endl;
+ cout<<" 1st Prime No. : ";cin>>p;
+ cout<<" 2nd Prime No. : ";cin>>q;
  n=p*q;
  phiN=(p-1)*(q-1);
  e=getE();
  d=getD(phiN,e);
 }
+void Users::saveFile(){
+ while(true){
+     cout<<"Save This Data to File Y/N:";
+     cin>>ch;
+     if(ch=='Y'||ch=='y'){
+        cout<<"Save File as :";
+        cin>>name;
+        if(rename("encrypted.dat",name)==0){
+            cout<<"File Saved!"<<endl;
+            Sleep(2000);
+            break;
+        }
+        else{
+            cout<<"FIle NOT saved"<<endl;
+            cout<<"Try Again!"<<endl;
+        }
+     }
+     else if(ch=='n'||ch=='N'){
+        break;
+     }
+     else{
+        cout<<"Enter Correct Input"<<endl;
+     }
+ }
+}
 void Users::rsaFileEncrypt(){
  system("cls");
- int i;
- char name[20],ch;
  cout<<"Please name file to encrypt : ";
  cin>>name;
  ofstream out("encrypted.dat",ios::out);
@@ -88,12 +118,15 @@ void Users::rsaFileEncrypt(){
 
  if(!rdChar){
     cout<<" File not Found!"<<endl;
+    cout<<" Enter valid name with extension!"<<endl;
+    pressKey();
     return;
  }
  else{
     cout<<" Found the File!"<<endl;
+    cout<<"Now enter your private key : ";
+    cin>>e;
  }
- genKeys();
  cout<<"Encrypting Data!"<<endl;
  while(rdChar.get(ch)){
     int m=ch;
@@ -105,21 +138,14 @@ void Users::rsaFileEncrypt(){
  cout<<"\nData Encryption Complete !"<<endl;
  rdChar.close();
  out.close();
-  cout<<"Save This Data to File Y/N:";
- cin>>ch;
- if(ch=='Y'||ch=='y'){
-    cout<<"Save File as :";
-    cin>>name;
-    rename("encrypted.dat",name);
- }
+ saveFile();
 }
 int Users::rsaEncrypt(){
- genKeys();
  system("cls");
  string str;
- char name[18];
- char ch;
  int i=0;
+ cout<<"Please enter your private key : ";
+ cin>>e;
  cout<<"Now enter the message :";
  cin.ignore(10,'\n');
  getline(cin,str);
@@ -137,42 +163,21 @@ int Users::rsaEncrypt(){
  }
  cout<<"\nData Encryption Complete !"<<endl;
  out.close();
- while(true){
- cout<<"Save This Data to File Y/N:";
- cin>>ch;
- if(ch=='Y'||ch=='y'){
-    cout<<"Save File as :";
-    cin>>name;
-    if(rename("encrypted.dat",name)==0){
-        cout<<"File Saved!"<<endl;
-        Sleep(2000);
-        break;
-    }
-    else{
-        cout<<"FIle NOT saved"<<endl;
-        cout<<"Try Again!"<<endl;
-    }
- }
- else if(ch=='n'||ch=='N'){
-    break;
- }
- else{
-    cout<<"Enter Correct Input"<<endl;
- }
- }
+ saveFile();
 }
 void Users::rsaDecrypt(){
     system("cls");
-    char name[20],ch;
     int a;
     cout<<"Name the File.extension to Decrypt"<<endl;
     cin>>name;
     fstream encInt(name,ios::in);
     if(!encInt){
         cout<<"The file You have entered not found!"<<endl;
+        pressKey();
         return;
     }
-    genKeys();
+    cout<<"Now enter your public key : ";
+    cin>>d;
     //Saving the dec into decrypted.dat
     fstream decFile("decrypted.dat",ios_base::out);
     while (encInt >> a)
@@ -233,35 +238,45 @@ int Users::exitProg(){
  }
 return 1;
 }//***********AuthenticatingCredential.dat*********int Users::authenticate(){
-  char p[20],u[20]; //read uname,pwd,pvtkey from file and match with obeject ifstream rd("credential.dat",ios::in);
+  char psw[20],u[20]; //read uname,pwd,pvtkey from file and match with obeject ifstream rd("credential.dat",ios::in);
  if(!rd){
     cout<<"The credential Data failed to load";
     exit(0);
  }
  while(true){
      rd.getline(u,20,'#');//For reading Username
-     rd.getline(p,20,'#');//For reading Password
+     rd.getline(psw,20,'#');//For reading Password
+     rd>>p;
+     rd>>q;
    //red.getline(pk,20,'#');//For Reading Private key
-     if((strcmp(u,uname)==0)&&(strcmp(p,pwd)==0))
-      return 1;
+     if((strcmp(u,uname)==0)&&(strcmp(psw,pwd)==0))
+      {   n=p*q;
+          return 1;
+          }
      if(rd.tellg()==0||rd.tellg()==-1)
         break;
 
  }
- cout<<"Login failed!"<<endl<<"Try Again"<<endl;
- Sleep(1500); return 0;}//***********credentialInput**********************void Users::credential(){system("cls"); cout<<"Enter Your Details..."<<endl; cout<<" Username : ";cin>>uname; cout<<" Password : ";cin>>pwd;}//**********user_login****************************void Users::login(){ int choice,flag=0; credential(); flag=authenticate(); if(flag==1){    cout<<"Login Successfull!"<<endl;    Sleep(1000);    do{ system("cls");
+ cout<<"Check username and password!"<<endl<<" Try Again!"<<endl;
+ pressKey(); return 0;}//***********credentialInput**********************void Users::credential(){system("cls"); cout<<"Enter Your Details..."<<endl; cout<<" Username : ";cin>>uname; cout<<" Password : ";cin>>pwd;}//**********user_login****************************void Users::login(){ int choice,flag=0; credential(); flag=authenticate(); if(flag==1){    cout<<"Login Successfull!"<<endl;    Sleep(1000);    do{ system("cls");
         cout<<"Welcome "<<uname<<endl;        cout<<" 1>List All files."<<endl;        //Always show the encypted data to console!        cout<<" 2>Encrypt Data from Keyboard."<<endl;        cout<<" 3>Encrypt a Text File."<<endl;        //Show Data to the console and also Save to file        cout<<" 4>Decrypt Your Data."<<endl;        cout<<" 5>Switch User"<<endl;        cout<<" 6>Exit"<<endl;        cout<<"Choice : ";
         cin.clear();
         cin.ignore(100,'\n');
         cin>>choice;        switch(choice){            case 1:system("cls");                   cout<<"Files under current directory!"<<endl;                   system("dir *.*");                   cout<<endl<<"*********************"<<endl;
                    cout<<"Press any key to continue.."<<endl;
-                   getch();                break;            case 2:rsaEncrypt();//keyEncrypt();                break;            case 3:rsaFileEncrypt();                break;            case 4:rsaDecrypt();//decData();                break;            case 5:return;                break;            case 6:exitProg();            default:system("cls");                    cout<<"Invalid Input!"<<endl;                break;    }    }while(true); } }//**********user Sign up**************************void Users::signUp(){ system("cls"); string temp;
- here: credential(); cout<<" Re-enter Password : ";
- cin>>temp; if(temp!=pwd){    cout<<"Password Did not match!"<<endl;    Sleep(2000);    goto here;    } else{
-    ofstream out("credential.dat",ios::app);    if(!out){    cout<<"Failed to create ofstream object!";    exit(-1);    }    out<<uname<<'#'<<pwd<<'#';    cout<<"Account Successfully Created"<<endl;    cout<<"\nNote Down Your Keys:"<<endl;
-    cout<<"  Private Key : "<<endl;
-    cout<<"  Public Key : "<<endl;    cout<<"\nPress any key to continue..."<<endl;}
-getch();}//******************dataEncryption****************int main(){ int choice,i=0; Users u1; do{    system("cls");
+                   getch();                break;            case 2:rsaEncrypt();//keyEncrypt();                break;            case 3:rsaFileEncrypt();                break;            case 4:rsaDecrypt();//decData();                break;            case 5:return;                break;            case 6:exitProg();            default:system("cls");                    cout<<"Invalid Input!"<<endl;                break;    }    }while(true); } }//**********user Sign up**************************void Users::signUp(){ system("cls"); string temp; here: credential(); cout<<" Re-enter Password : ";
+ cin>>temp; if(temp!=pwd){    cout<<"Password Did not match!"<<endl;
+    pressKey();    goto here;    }
+ else if(strlen(pwd)<8){
+    cout<<"Password should be of at least of 8 character!"<<endl;
+    pressKey();
+    goto here;
+ } else{
+    ofstream out("credential.dat",ios::app);    if(!out){    cout<<"Failed to create ofstream object!";    exit(-1);    }
+    genKeys();    out<<uname<<'#'<<pwd<<'#'<<'\n';
+    out<<p<<' '<<q;    cout<<"Account Successfully Created"<<endl;    cout<<"\nNote Down Your Keys:"<<endl;
+    cout<<"  Private Key : "<<e<<endl;
+    cout<<"  Public Key : "<<d<<endl;    pressKey();}}//******************dataEncryption****************int main(){ int choice,i=0; Users u1; do{    system("cls");
     cout<<"*************RSA encrption*************"<<endl;    cout<<"Choose any of option:"<<endl;    cout<<" 1>Login"<<endl;    cout<<" 2>SignUp"<<endl;    cout<<" 3>Exit"<<endl;    cout<<"Choice: ";    cin>>choice;
     cin.clear();//It clear cin error flag which stops further input
     cin.ignore(1000,'\n');/*It ignores 1000 char and stop on encountering newline char
