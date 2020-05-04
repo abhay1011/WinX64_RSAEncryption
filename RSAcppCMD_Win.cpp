@@ -50,7 +50,7 @@ int64_t Users::gcd(int64_t a,int64_t b){
 }
 //For calculating e(Private key) for encryption
 int64_t Users::getE(){
-    int64_t retE=2;
+    int64_t retE=14;
     while(retE<phiN)
     {
         if(gcd(retE,phiN)==1)
@@ -291,7 +291,7 @@ return 1;
     i++;
  }
  pwd[i]='\0';
- cout<<endl<<pwd<<endl;}//**********user_login****************************void Users::login(){ int choice,flag=0; credential(); flag=authenticate(); if(flag==1){    cout<<"Login Successfull!"<<endl;    Sleep(1000);    do{ system("cls");
+ cout<<endl;//<<pwd<<endl;}//**********user_login****************************void Users::login(){ int choice,flag=0; credential(); flag=authenticate(); if(flag==1){    cout<<"Login Successfull!"<<endl;    Sleep(1000);    do{ system("cls");
         cout<<"Welcome "<<uname<<endl;        cout<<" 1>List All files."<<endl;        //Always show the encypted data to console!        cout<<" 2>Encrypt Data from Keyboard."<<endl;        cout<<" 3>Encrypt a Text File."<<endl;        //Show Data to the console and also Save to file        cout<<" 4>Decrypt Your Data."<<endl;        cout<<" 5>Switch User"<<endl;        cout<<" 6>Exit"<<endl;        cout<<"Choice : ";
         cin.clear();
         cin.ignore(100,'\n');
