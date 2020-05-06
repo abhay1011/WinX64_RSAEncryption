@@ -174,7 +174,6 @@ int Users::rsaEncrypt(){
 // cout<<"Please enter your private key : ";
  //cin>>e;
  cout<<"Now enter the message :";
- cin.ignore(10,'\n');
  getline(cin,str);
  ch=str[i];
  ofstream out("encrypted.dat",ios::out); if(!out){    cout<<"Failed to create ofstream object!";
@@ -313,9 +312,9 @@ return 1;
  pwd[i]='\0';
  cout<<endl;}//**********user_login****************************void Users::login(){ int choice,flag=0; credential(); flag=authenticate(); if(flag==1){    cout<<"Login Successfull!"<<endl;    Sleep(1000);    do{ system("cls");
         cout<<"Welcome "<<uname<<endl;        cout<<" 1>List All files."<<endl;        //Always show the encypted data to console!        cout<<" 2>Encrypt Data from Keyboard."<<endl;        cout<<" 3>Encrypt a Text File."<<endl;        //Show Data to the console and also Save to file        cout<<" 4>Decrypt Your Data."<<endl;        cout<<" 5>Go Back Main Menu."<<endl;        cout<<" 6>Exit"<<endl;        cout<<"Choice : ";
+        cin>>choice;
         cin.clear();
-        cin.ignore(100,'\n');
-        cin>>choice;        switch(choice){            case 1:system("cls");                   cout<<"Files under current directory!"<<endl;                   system("dir *.*");                   cout<<endl<<"*********************"<<endl;
+        cin.ignore(100,'\n');        switch(choice){            case 1:system("cls");                   cout<<"Files under current directory!"<<endl;                   system("dir *.*");                   cout<<endl<<"*********************"<<endl;
                    cout<<"Press any key to continue.."<<endl;
                    getch();                break;            case 2:rsaEncrypt();//keyEncrypt();                break;            case 3:rsaFileEncrypt();                break;            case 4:rsaDecrypt();//decData();                break;            case 5:return;                break;            case 6:exitProg();            default:system("cls");                    cout<<"Invalid Input!"<<endl;                break;    }    }while(true); } }//**********user Sign up**************************void Users::signUp(){
  system("cls");
@@ -344,7 +343,7 @@ return 1;
  cout<<endl;
  if(strcmp(psw,pwd)!=0){
     cout<<"Password do not match try again"<<endl;
-    getch();
+    pressKey();
     goto here;
  }
  else if(strlen(pwd)<8){
