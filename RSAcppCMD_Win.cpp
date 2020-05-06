@@ -268,8 +268,8 @@ return 1;
 }//***********AuthenticatingCredential.dat*********int Users::authenticate(){
   char psw[20],u[20]; //read uname,pwd,pvtkey from file and match with obeject ifstream rd("credential.dat",ios::in);
  if(!rd){
-    cout<<"The credential Data failed to load";
-    exit(0);
+    cout<<"The credential Data failed to load"<<endl;
+    pressKey();
  }
  while(true){
      rd.getline(u,20,'#');//For reading Username
@@ -320,7 +320,7 @@ return 1;
                    getch();                break;            case 2:rsaEncrypt();//keyEncrypt();                break;            case 3:rsaFileEncrypt();                break;            case 4:rsaDecrypt();//decData();                break;            case 5:return;                break;            case 6:exitProg();            default:system("cls");                    cout<<"Invalid Input!"<<endl;                break;    }    }while(true); } }//**********user Sign up**************************void Users::signUp(){
  system("cls");
  char psw[20],u[20];
- int p,q,d,e; here:
+ int t1,t2,t3,t4; here:
  int i=0; //After the here: to reset i to 0 credential();
  cout<<" Re-enter Your Password: ";
  do{
@@ -352,30 +352,34 @@ return 1;
     pressKey();
     goto here;
  } else{
-    fstream out("credential.dat",ios::in);    if(!out){    cout<<"Failed to create ofstream object!";    exit(-1);    }
-     while(true){
-     out.getline(u,20,'#');//For reading Username
-     out.getline(psw,20,'#');//For reading Password
-     out>>p;
-     out>>q;
-     out>>e;
-     out>>d;
-   //red.getline(pk,20,'#');//For Reading Private key
-     if((strcmp(u,uname)==0))
-      {  cout<<"Choose Different Username!"<<endl;
-         pressKey();
-         goto here;
-          }
-     if(out.tellg()==0||out.tellg()==-1)
-        break;
+    fstream out("credential.dat",ios::in);    if(!out){       // cout<<"Can't Verify User-names!"<<endl;
+        out.close();    }
+    else{
+         while(true){
+             out.getline(u,20,'#');//For reading Username
+             out.getline(psw,20,'#');//For reading Password
+             out>>t1;
+             out>>t2;
+             out>>t3;
+             out>>t4;
+             if((strcmp(u,uname)==0))
+              {  cout<<"Choose Different Username!"<<endl;
+                 pressKey();
+                 goto here;
+                  }
+             if(out.tellg()==0||out.tellg()==-1)
+                break;
+         }
+         out.close();
      }
-    out.close();
-    genKeys();
-    fstream wrt("credential.dat",ios::app);    if(!wrt){    cout<<"Failed to create ofstream object!";    exit(-1);    }    wrt<<uname<<'#'<<pwd<<'#'<<'\n';
-    wrt<<p<<' '<<q<<' '<<e<<' '<<d;    cout<<"Account Created Successfully!"<<endl;
-    cout<<"  Private Key : "<<e<<endl;
-    cout<<"  Public Key : "<<d<<endl;
-    out.flush();    pressKey();}}//******************dataEncryption****************int main(){ int choice,i=0; Users u1; do{    system("cls");
+    fstream wrt("credential.dat",ios::app);    if(!wrt){        cout<<"Unable TO Load Credential.dat"<<endl;        pressKey();    }
+    else{
+        genKeys();        wrt<<uname<<'#'<<pwd<<'#'<<'\n';
+        wrt<<p<<' '<<q<<' '<<e<<' '<<d;        cout<<"Account Created Successfully!"<<endl;
+        cout<<"  Private Key : "<<e<<endl;
+        cout<<"  Public Key : "<<d<<endl;
+        wrt.flush();        pressKey();
+    }   }}//******************dataEncryption****************int main(){ int choice,i=0; Users u1; do{    system("cls");
     cout<<"*************RSA encrption*************"<<endl;    cout<<"Choose any of option :"<<endl;    cout<<" 1>Login"<<endl;    cout<<" 2>SignUp"<<endl;    cout<<" 3>Exit"<<endl;    cout<<"Choice: ";    cin>>choice;
     cin.clear();//It clear cin error flag which stops further input
     cin.ignore(1000,'\n');/*It ignores 1000 char and stop on encountering newline char
