@@ -86,6 +86,8 @@ void Users::genKeys(){
  int arr[]={5,7,11,13,17,19,23,29,31,37};
  int i,j,rInt;
  cout<<"Generating Keys Wait...."<<endl;
+ again:
+ n=0;
  do{
      rInt=getRandom();
      i=rInt%10;
@@ -100,10 +102,16 @@ void Users::genKeys(){
  phiN=(p-1)*(q-1);
  e=getE();
  d=getD(phiN,e);
+ if(e==d){
+    cout<<" Processing...."<<endl;
+    goto again;
+    }
 }
 void Users::saveFile(){
  while(true){
-     cout<<"Save This Data to File Y/N:";
+     cout<<"\n\nSave This Data to File Y/N:";
+     cin.clear();
+     cin.ignore(100,'\n');
      cin>>ch;
      if(ch=='Y'||ch=='y'){
         cout<<"Save File as :";
@@ -122,7 +130,7 @@ void Users::saveFile(){
         break;
      }
      else{
-        cout<<"Enter Correct Input"<<endl;
+        cout<<"Enter Correct Input Y/N"<<endl;
      }
  }
 }
@@ -217,7 +225,7 @@ void Users::rsaDecrypt(){
     msgFile.close();
     txtFile.close();
     while(true){
-        cout<<"\nSave The Data? Y/N :";
+        cout<<"\n\nSave The Data? Y/N :";
         cin>>ch;
         if(ch=='y'||ch=='Y'){
             cout<<"Please name the file:";
@@ -283,34 +291,74 @@ return 1;
  ch='\n';
  system("cls"); cout<<"Enter Your Details..."<<endl; cout<<" Username : ";
  cin>>uname; cout<<" Password : ";
- ch=getch();
- while((int)ch!=13){
-    pwd[i]=ch;
-    cout<<"*";
+ do{
     ch=getch();
-    i++;
+    if(ch!=8&&ch!=13&&ch!=' ')
+        {
+         cout<<"*";
+         pwd[i]=ch;
+         i++;
+        }
+      else if (ch==8&&i>0) // if backspace is presssed
+       {
+         cout<<"\b \b"; // moves cursor to the left print <space> again move cursor to left
+         i--;
+       }
+    else
+    {
+    }
  }
+ while(ch!=13);
  pwd[i]='\0';
- cout<<endl;//<<pwd<<endl;}//**********user_login****************************void Users::login(){ int choice,flag=0; credential(); flag=authenticate(); if(flag==1){    cout<<"Login Successfull!"<<endl;    Sleep(1000);    do{ system("cls");
-        cout<<"Welcome "<<uname<<endl;        cout<<" 1>List All files."<<endl;        //Always show the encypted data to console!        cout<<" 2>Encrypt Data from Keyboard."<<endl;        cout<<" 3>Encrypt a Text File."<<endl;        //Show Data to the console and also Save to file        cout<<" 4>Decrypt Your Data."<<endl;        cout<<" 5>Switch User"<<endl;        cout<<" 6>Exit"<<endl;        cout<<"Choice : ";
+ cout<<endl;}//**********user_login****************************void Users::login(){ int choice,flag=0; credential(); flag=authenticate(); if(flag==1){    cout<<"Login Successfull!"<<endl;    Sleep(1000);    do{ system("cls");
+        cout<<"Welcome "<<uname<<endl;        cout<<" 1>List All files."<<endl;        //Always show the encypted data to console!        cout<<" 2>Encrypt Data from Keyboard."<<endl;        cout<<" 3>Encrypt a Text File."<<endl;        //Show Data to the console and also Save to file        cout<<" 4>Decrypt Your Data."<<endl;        cout<<" 5>Go Back Main Menu."<<endl;        cout<<" 6>Exit"<<endl;        cout<<"Choice : ";
         cin.clear();
         cin.ignore(100,'\n');
         cin>>choice;        switch(choice){            case 1:system("cls");                   cout<<"Files under current directory!"<<endl;                   system("dir *.*");                   cout<<endl<<"*********************"<<endl;
                    cout<<"Press any key to continue.."<<endl;
-                   getch();                break;            case 2:rsaEncrypt();//keyEncrypt();                break;            case 3:rsaFileEncrypt();                break;            case 4:rsaDecrypt();//decData();                break;            case 5:return;                break;            case 6:exitProg();            default:system("cls");                    cout<<"Invalid Input!"<<endl;                break;    }    }while(true); } }//**********user Sign up**************************void Users::signUp(){ system("cls"); here: credential();
- if(strlen(pwd)<8){
+                   getch();                break;            case 2:rsaEncrypt();//keyEncrypt();                break;            case 3:rsaFileEncrypt();                break;            case 4:rsaDecrypt();//decData();                break;            case 5:return;                break;            case 6:exitProg();            default:system("cls");                    cout<<"Invalid Input!"<<endl;                break;    }    }while(true); } }//**********user Sign up**************************void Users::signUp(){
+ system("cls");
+ char psw[20]; here:
+ int i=0; //After the here: to reset i to 0 credential();
+ cout<<" Re-enter Your Password: ";
+ do{
+    ch=getch();
+    if(ch!=8&&ch!=13&&ch!=' ')
+        {
+         cout<<"*";
+         psw[i]=ch;
+         i++;
+        }
+      else if (ch==8&&i>0) // if backspace is presssed
+       {
+         cout<<"\b \b";
+         i--;
+
+       }
+       else{}
+ }
+ while(ch!=13);
+ psw[i]='\0';
+ cout<<endl;
+ if(strcmp(psw,pwd)!=0){
+    cout<<"Password do not match try again"<<endl;
+    getch();
+    goto here;
+ }
+ else if(strlen(pwd)<8){
     cout<<"Password should be of at least of 8 character!"<<endl;
     pressKey();
     goto here;
  } else{
     ofstream out("credential.dat",ios::app);    if(!out){    cout<<"Failed to create ofstream object!";    exit(-1);    }
     genKeys();    out<<uname<<'#'<<pwd<<'#'<<'\n';
-    out<<p<<' '<<q<<' '<<e<<' '<<d;    cout<<"Account Successfully Created"<<endl;
+    out<<p<<' '<<q<<' '<<e<<' '<<d;    cout<<"Account Created Successfully!"<<endl;
     cout<<"  Private Key : "<<e<<endl;
-    cout<<"  Public Key : "<<d<<endl;    pressKey();}}//******************dataEncryption****************int main(){ int choice,i=0; Users u1; do{    system("cls");
-    cout<<"*************RSA encrption*************"<<endl;    cout<<"Choose any of option:"<<endl;    cout<<" 1>Login"<<endl;    cout<<" 2>SignUp"<<endl;    cout<<" 3>Exit"<<endl;    cout<<"Choice: ";    cin>>choice;
+    cout<<"  Public Key : "<<d<<endl;    pressKey();}
+}//******************dataEncryption****************int main(){ int choice,i=0; Users u1; do{    system("cls");
+    cout<<"*************RSA encrption*************"<<endl;    cout<<"Choose any of option :"<<endl;    cout<<" 1>Login"<<endl;    cout<<" 2>SignUp"<<endl;    cout<<" 3>Exit"<<endl;    cout<<"Choice: ";    cin>>choice;
     cin.clear();//It clear cin error flag which stops further input
     cin.ignore(1000,'\n');/*It ignores 1000 char and stop on encountering newline char
      avoid infinite loop on entering non-int and avoid parse failure*/    switch(choice){        case 1:u1.login();            break;        case 2:u1.signUp();            break;        case 3:u1.exitProg();            break;        default:system("cls");
-                cout<<"Choose a valid option!\n";
-                cout<<i++;                Sleep(1000);            break;    } }while(true); return 0;}
+                cout<<"Press 1,2,3 only!"<<endl;
+                Sleep(1500);            break;    } }while(true); return 0;}
