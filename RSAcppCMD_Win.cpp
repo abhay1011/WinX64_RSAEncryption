@@ -379,7 +379,8 @@ return 1;
         cout<<"  Public Key : "<<d<<endl;
         wrt.flush();        pressKey();
     }   }}//******************dataEncryption****************int main(){ int choice,i=0; Users u1; do{    system("cls");
-    cout<<"*************RSA encrption*************"<<endl;    cout<<"Choose any of option :"<<endl;    cout<<" 1>Login"<<endl;    cout<<" 2>SignUp"<<endl;    cout<<" 3>Exit"<<endl;    cout<<"Choice: ";    cin>>choice;
+    cout<<"******Text Encryption Using RSA******"<<endl;
+    cout<<"--------------------------------------"<<endl;    cout<<"Choose any of option :"<<endl;    cout<<" 1>Login"<<endl;    cout<<" 2>SignUp"<<endl;    cout<<" 3>Exit"<<endl;    cout<<"Choice: ";    cin>>choice;
     cin.clear();//It clear cin error flag which stops further input
     cin.ignore(1000,'\n');/*It ignores 1000 char and stop on encountering newline char
      avoid infinite loop on entering non-int and avoid parse failure*/    switch(choice){        case 1:u1.login();            break;        case 2:u1.signUp();            break;        case 3:u1.exitProg();            break;        default:system("cls");
