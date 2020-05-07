@@ -124,7 +124,7 @@ void Users::saveFile(){
         }
         else {
             cout<<"FIle NOT Saved."<<endl;
-            cout<<"Try Again!"<<endl;
+            cout<<" Check Same File Name Exist\n Try Again!"<<endl;
         }
      }
      else if(ch=='n'||ch=='N'){
