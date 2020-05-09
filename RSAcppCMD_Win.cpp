@@ -12,8 +12,8 @@ namespace mp = boost::multiprecision;
 typedef mp::number<mp::cpp_int_backend<4096, 4096, mp::signed_magnitude, mp::unchecked, void> >  int4096_t;//***********classSection*************************
 class Users{private:
     int64_t p,q,n,phiN,e,d;
-    char ch,name[20];
-    int4096_t temp,ct,msg;    char uname[20],pwd[20];    void credential();    int authenticate();
+    char ch,name[40];
+    int4096_t temp,ct,msg;    char uname[40],pwd[40];    void credential();    int authenticate();
     int64_t gcd(int64_t a,int64_t b);
     int64_t getE();
     int64_t getD(double phiN,double e);
@@ -119,7 +119,7 @@ void Users::saveFile(){
         cin.ignore(100,'\n');
         if(rename("encrypted.dat",name)==0){
             cout<<"File Saved!"<<endl;
-            Sleep(2000);
+            Sleep(4000);
             break;
         }
         else {
@@ -252,7 +252,7 @@ int Users::exitProg(){
  cout<<"Exit The Program (Y/N) :";
  cin>>choice;
  cin.clear();
- cin.ignore(20,'\n');
+ cin.ignore(40,'\n');
  if(choice=='Y'||choice=='y')
     exit(0);
  else if(choice=='n'||choice=='N'){
@@ -265,19 +265,19 @@ int Users::exitProg(){
  }
 return 1;
 }//***********AuthenticatingCredential.dat*********int Users::authenticate(){
-  char psw[20],u[20]; //read uname,pwd,pvtkey from file and match with obeject ifstream rd("credential.dat",ios::in);
+  char psw[40],u[40]; //read uname,pwd,pvtkey from file and match with obeject ifstream rd("credential.dat",ios::in);
  if(!rd){
     cout<<"The credential Data failed to load"<<endl;
     pressKey();
  }
  while(true){
-     rd.getline(u,20,'#');//For reading Username
-     rd.getline(psw,20,'#');//For reading Password
+     rd.getline(u,40,'#');//For reading Username
+     rd.getline(psw,40,'#');//For reading Password
      rd>>p;
      rd>>q;
      rd>>e;
      rd>>d;
-   //red.getline(pk,20,'#');//For Reading Private key
+   //red.getline(pk,40,'#');//For Reading Private key
      if((strcmp(u,uname)==0)&&(strcmp(psw,pwd)==0))
       {   n=p*q;
           return 1;
@@ -318,7 +318,7 @@ return 1;
                    cout<<"Press any key to continue.."<<endl;
                    getch();                break;            case 2:rsaEncrypt();//keyEncrypt();                break;            case 3:rsaFileEncrypt();                break;            case 4:rsaDecrypt();//decData();                break;            case 5:return;                break;            case 6:exitProg();            default:system("cls");                    cout<<"Invalid Input!"<<endl;                break;    }    }while(true); } }//**********user Sign up**************************void Users::signUp(){
  system("cls");
- char psw[20],u[20];
+ char psw[40],u[40];
  int t1,t2,t3,t4; here:
  int i=0; //After the here: to reset i to 0 credential();
  cout<<" Re-enter Your Password: ";
@@ -355,8 +355,8 @@ return 1;
         out.close();    }
     else{
          while(true){
-             out.getline(u,20,'#');//For reading Username
-             out.getline(psw,20,'#');//For reading Password
+             out.getline(u,40,'#');//For reading Username
+             out.getline(psw,40,'#');//For reading Password
              out>>t1;
              out>>t2;
              out>>t3;
