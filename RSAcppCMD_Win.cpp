@@ -1,4 +1,6 @@
-//This is windows 64 bit version
+/*Program for Text Encryption Using RSA Algorithm
+Author:Abhay Singh
+*/
 #include<windows.h>//For Sleep(milliseconds)
 #include<iostream>
 #include<conio.h>
